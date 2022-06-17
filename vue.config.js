@@ -8,8 +8,19 @@ module.exports = {
       filename: "index.html"
     }
   },
-  chainWebpack: (config) => {
-    config.resolve.alias
-      .set('~', path.resolve('packages'))
+  devServer: {
+    open: true
+  },
+  productionSourceMap: false,
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '~': path.resolve('packages')
+      }
+    },
+    devtool: 'eval-source-map',
+    plugins: [
+      require('unplugin-vue-define-options/webpack')()
+    ]
   }
 }

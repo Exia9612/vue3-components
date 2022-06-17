@@ -1,8 +1,11 @@
 
 <template>
   <div>
-    <p :onclick="test">组件示例</p>
-    <my-selector></my-selector>
+    <p :onclick="handleMenuItem">组件示例</p>
+    <my-selector
+      :menuData="testMenuData"
+      @setMenuItemValue="handleMenuItem">
+    </my-selector>
   </div>
 </template>
  
@@ -12,19 +15,32 @@ import { defineComponent, Ref, ref } from 'vue';
 export default defineComponent({
   name: 'App',
   setup() {
+    const testMenuData = [
+      {
+        id: 1,
+        value: 'react',
+        text: 'ReactJs'
+      },
+      {
+        id:2,
+        value: 'react-hooks',
+        text: 'React Hooks'
+      },
+      {
+        id:3,
+        value: 'vue2',
+        text:'vue#.x'
+      }
+    ]
     const count: Ref<number> = ref(0)
-    const handleClick = () => {
-      count.value++
+    const handleMenuItem = (value: string | number) => {
+      console.log(value)
     }
 
     return {
       count,
-      handleClick
-    }
-  },
-  methods: {
-    test() {
-      console.log(this)
+      handleMenuItem,
+      testMenuData
     }
   }
 });

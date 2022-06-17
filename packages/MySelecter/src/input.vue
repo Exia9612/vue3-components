@@ -4,24 +4,32 @@
     <input
       type="text"
       class="input"
+      :value="inputValue"
+      @input="searchOptions($event)"
     />
     <span class="iconfont icon-arrow-down"></span>
   </div>
 </template>
 
 <script lang="ts" setup>
-interface IInputProps {
-  label: string,
-  placeholder: string
-}
-
 /*
  如果使用TS的话可以直接传入类型进行参数声明，我们可能会去将参数的类型给抽离出来以重复利用，但是如果在 defineProps 使用外部引入的interface或者type会报错的,它提醒我们要使用字面量类型，当前在github上vue的issue已经有这个问题了，目前还没解决，期待早日完善，目前的方法就是类型只能写在当前的vue文件中。
 */
-const props = withDefaults(defineProps<IInputProps> (), {
-  label: '',
-  placeholder: '请选择'
-})
+const props = withDefaults(defineProps<{
+  placeholder: string,
+  inputValue: string
+}> (), {
+  placeholder: '请选择',
+  inputValue: ''
+}) 
+const emit = defineEmits<{
+  (event: 'searchOptions', str: string): void
+}>()
+
+const searchOptions = (event: Event) => {
+  console.log((event.target as HTMLInputElement).value)
+  emit('searchOptions', (event.target as HTMLInputElement).value)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -50,7 +58,7 @@ const props = withDefaults(defineProps<IInputProps> (), {
   .placeholder {
     position: absolute;
     left: 15px;
-    top: 8px;
+    top: 11px;
     color: #999;
   }
 
