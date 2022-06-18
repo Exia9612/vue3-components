@@ -1,20 +1,26 @@
 <template>
   <div class="dropdown-menu">
-    <div
-      class="menu-item"
-      v-for="(item, index) in state.searchData"
-      :key="index"
-      @click="handleClick(item)"
-    >
-      {{ item.text }}
-    </div>
+    <template v-if="state.searchData.length > 0">
+      <div
+        class="menu-item"
+        v-for="(item, index) in state.searchData"
+        :key="index"
+        @click="handleClick(item)">
+        {{ item.text }}
+      </div>
+    </template>
+    <template v-else>
+      <no-data-tip>
+        - 没有搜索到数据 -
+      </no-data-tip>
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'fs';
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, watch } from 'vue';
 import { IMeunItemData, IMenuState } from './selector'
+import NoDataTip from './noDataTip.vue'
 
 defineOptions({
   name: 'SelectorMenu'
@@ -25,7 +31,7 @@ const props = withDefaults(defineProps<{
   searchValue: string
 }> (), {
   data: () => [],
-  searchValue: ''
+  searchValue: '',
 })
 
 const emit = defineEmits<{
@@ -42,7 +48,7 @@ watch(
   },
   (value: string) => {
     state.searchData = props.data.filter((menuItem: IMeunItemData) => {
-      menuItem.text.toLowerCase().includes(value)
+      return menuItem.text.toLowerCase().includes(value)
     })
   }
 )

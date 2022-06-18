@@ -2,10 +2,14 @@
 <template>
   <div>
     <p :onclick="handleMenuItem">组件示例</p>
-    <my-selector
+    <my-carousel>
+      <my-carousel-item></my-carousel-item>
+      <my-carousel-item>第二个</my-carousel-item>
+    </my-carousel>
+    <!-- <my-selector>
       :menuData="testMenuData"
       @setMenuItemValue="handleMenuItem">
-    </my-selector>
+    </my-selector> -->
   </div>
 </template>
  

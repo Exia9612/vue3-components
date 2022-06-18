@@ -4,6 +4,4 @@ import installMyComponents from '~/index'
 import '../assets/css/iconfont.css'
 
 const app = createApp(App)
-app.use(installMyComponents)
-app.mount('#app')
-
+app.use(installMyComponents).mount('#app')
