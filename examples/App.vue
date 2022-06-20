@@ -1,10 +1,19 @@
 
 <template>
-  <div>
+  <div class="container">
     <p :onclick="handleMenuItem">组件示例</p>
-    <my-carousel>
-      <my-carousel-item></my-carousel-item>
-      <my-carousel-item>第二个</my-carousel-item>
+    <my-carousel
+      height="100%"
+      :autoplay="true"
+      :duration="3000"
+      :initialIndex="1"
+      :hasDot="true"
+      :hasDirector="true">
+      <my-carousel-item
+        v-for="item in 4"
+        :key="item">
+        <h3>{{ item }}</h3>
+      </my-carousel-item>
     </my-carousel>
     <!-- <my-selector>
       :menuData="testMenuData"
@@ -50,13 +59,10 @@ export default defineComponent({
 });
 </script>
  
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="scss" scoped>
+.container {
+  width: 520px;
+  height: 280px;
+  margin: 150px auto;
 }
 </style>
