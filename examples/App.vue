@@ -2,7 +2,7 @@
 <template>
   <div class="container">
     <p :onclick="handleMenuItem">组件示例</p>
-    <my-carousel
+    <!-- <my-carousel
       height="100%"
       :autoplay="true"
       :duration="3000"
@@ -14,11 +14,12 @@
         :key="item">
         <h3>{{ item }}</h3>
       </my-carousel-item>
-    </my-carousel>
+    </my-carousel> -->
     <!-- <my-selector>
       :menuData="testMenuData"
       @setMenuItemValue="handleMenuItem">
     </my-selector> -->
+    <my-magnifier/>
   </div>
 </template>
  
