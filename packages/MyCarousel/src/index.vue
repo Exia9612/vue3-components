@@ -11,6 +11,9 @@
         :dotColor="props.dotColor"
         @clickDot="handleDotClick">
       </DotItem>
+      <Director
+        :displayFlag="directorDisplayFlag">
+      </Director>
       <slot></slot>
     </div>
   </div>
@@ -20,6 +23,7 @@
 import { onBeforeMount, onMounted, provide, ref } from 'vue';
 import { myCouserlProvideKey, CarouselItemContext, PLAYOPTIONS } from './typing'
 import DotItem from './dot.vue'
+import Director from './director.vue'
 
 defineOptions({
   name: 'my-carousel'
@@ -47,6 +51,24 @@ const props = withDefaults(defineProps<{
 const currentIndex = ref<number>(props.initialIndex)
 const couselItems = ref<CarouselItemContext[]>([])
 const timer = ref<ReturnType<typeof setInterval> | null>(null)
+const directorDisplayFlag = ref(false)
+
+onMounted(() => {
+  playSlides()
+})
+
+onBeforeMount(() => {
+  if (timer.value) {
+    pauseTimer()
+  }
+})
+
+// 因为属性传递无法传递给slot,但可以通过provide
+provide(myCouserlProvideKey, {
+  currentIndex,
+  couselItems,
+  addCarouselItem // 在slot中触发事件并不知道需要向上传递多少层后，直接传递函数最好
+})
 
 const playSlides = () => {
   timer.value = setInterval(() => {
@@ -91,29 +113,14 @@ function handleDotClick(index: number) {
 }
 
 function mouseEnter() {
+  directorDisplayFlag.value = true
   pauseTimer()
 }
 
 function mouseLeave() {
+  directorDisplayFlag.value = false
   playSlides()
 }
-
-onMounted(() => {
-  playSlides()
-})
-
-onBeforeMount(() => {
-  if (timer.value) {
-    pauseTimer()
-  }
-})
-
-// 因为属性传递无法传递给slot,但可以通过provide
-provide(myCouserlProvideKey, {
-  currentIndex,
-  couselItems,
-  addCarouselItem // 在slot中触发事件并不知道需要向上传递多少层后，直接传递函数最好
-})
 </script>
 
 <style lang="scss" scoped>
