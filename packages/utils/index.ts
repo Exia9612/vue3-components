@@ -13,3 +13,15 @@ export function injectStrict<T> (injectKey: InjectionKey<T>, defaultSetting?: T)
   }
   return resolve
 }
+
+export function getStyle(el: HTMLElement, prop: string) {
+ const style = getComputedStyle(el)
+ return style.getPropertyValue(prop)
+}
+
+export function getMouseCoordinate(event: MouseEvent) {
+  return {
+    x: event.pageX,
+    y: event.pageY
+  }
+}

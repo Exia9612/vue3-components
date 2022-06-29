@@ -19,12 +19,21 @@
       :menuData="testMenuData"
       @setMenuItemValue="handleMenuItem">
     </my-selector> -->
-    <my-magnifier/>
+    <my-magnifier
+      :width="width"
+      :height="height"
+      :magWidth="magWidth"
+      :magHeight="magHeight"
+      :link="link"
+      :blank="blank"
+      :url="url"
+      :imgAlt="imgAlt">
+     </my-magnifier> 
   </div>
 </template>
  
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue';
+import { defineComponent, reactive, Ref, ref, toRefs } from 'vue';
  
 export default defineComponent({
   name: 'App',
@@ -50,11 +59,22 @@ export default defineComponent({
     const handleMenuItem = (value: string | number) => {
       console.log(value)
     }
+    const magnifierData = reactive({
+      width: '800px',
+      height: '533px',
+      magWidth: '100px',
+      magHeight: '100px',
+      link: 'www.baidu.com',
+      blank: false,
+      url: '../assets/images/sydney.jpeg',
+      imgAlt: ''
+    })
 
     return {
       count,
       handleMenuItem,
-      testMenuData
+      testMenuData,
+      ...toRefs(magnifierData)
     }
   }
 });
