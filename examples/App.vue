@@ -19,7 +19,7 @@
       :menuData="testMenuData"
       @setMenuItemValue="handleMenuItem">
     </my-selector> -->
-    <my-magnifier
+    <!-- <my-magnifier
       :width="width"
       :height="height"
       :magWidth="magWidth"
@@ -28,12 +28,25 @@
       :blank="blank"
       :url="url"
       :imgAlt="imgAlt">
-     </my-magnifier> 
+     </my-magnifier>  -->
+    <button @click="handleClickSuccess">
+      click success
+    </button>
+    <button @click="handleClickError">
+      click error
+    </button>
+    <button @click="handleClickWarning">
+      click warning
+    </button>
+    <button @click="handleClickInfo">
+      click info
+    </button>
   </div>
 </template>
  
 <script lang="ts">
 import { defineComponent, reactive, Ref, ref, toRefs } from 'vue';
+import { MyMessage } from '../packages/MyMessageBox'
  
 export default defineComponent({
   name: 'App',
@@ -70,11 +83,42 @@ export default defineComponent({
       imgAlt: ''
     })
 
+    const handleClickSuccess = () => {
+      MyMessage.success!({
+        message: 'success'
+      })
+    }
+
+    const handleClickError = () => {
+      MyMessage.error!({
+        message: 'error'
+      })
+    }
+
+    const handleClickWarning = () => {
+      MyMessage.warning!({
+        message: 'warning'
+      })
+    }
+
+    const handleClickInfo = () => {
+      MyMessage.info!({
+        message: 'info'
+      })
+    }
+
+    const type: Ref<string> = ref('success')
+
     return {
       count,
       handleMenuItem,
       testMenuData,
-      ...toRefs(magnifierData)
+      handleClickSuccess,
+      handleClickError,
+      handleClickWarning,
+      handleClickInfo,
+      ...toRefs(magnifierData),
+      type
     }
   }
 });
