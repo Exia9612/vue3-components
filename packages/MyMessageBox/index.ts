@@ -1,6 +1,6 @@
-import { App, ComponentPublicInstance, createApp, createVNode } from 'vue'
+import { App, ComponentPublicInstance, createApp, ref, watch } from 'vue'
 import MyMessageBox from './src/index.vue'
-import { messageTypes, MessageBoxOptions, MessageFn, Message } from './src/typings'
+import { messageTypes, MessageBoxOptions, MessageFn, Message, messageBoxExpose } from './src/typings'
 
 /*
   MyMessage({
@@ -13,6 +13,8 @@ import { messageTypes, MessageBoxOptions, MessageFn, Message } from './src/typin
   })
 */
 
+const messageBoxes = ref<ComponentPublicInstance<messageBoxExpose>[]>([])
+
 export const MyMessage: MessageFn & Partial<Message> = (options: MessageBoxOptions) => {
   const messageBox = createApp(MyMessageBox, options)
   displayMessageBox(messageBox, options.duration || 2000)
@@ -21,23 +23,34 @@ export const MyMessage: MessageFn & Partial<Message> = (options: MessageBoxOptio
 // ts中怎样使用documentfragment？？
 function displayMessageBox(app: any, duration: number) {
   const oFrag = document.createDocumentFragment()
-  const messageBoxInstance = app.mount(oFrag) as ComponentPublicInstance<{
-    setVisible: (flag: boolean) => Promise<void>
-  }>
+  const messageBoxInstance = app.mount(oFrag) as ComponentPublicInstance<messageBoxExpose>
   document.body.appendChild(oFrag)
+  messageBoxes.value.push(messageBoxInstance)
+ 
+  const currentInstanceTop = calcTop(messageBoxInstance)
+  messageBoxInstance.setTop(currentInstanceTop)
   messageBoxInstance.setVisible(true)
+  watch(messageBoxes, () => {
+    const nextTop = calcTop(messageBoxInstance)
+    messageBoxInstance.setTop(nextTop)
+  })
   closeMessageBox(app, messageBoxInstance, duration)
 }
 
-function closeMessageBox(app: App<Element>, vm: ComponentPublicInstance<{
-  setVisible: (flag: boolean) => Promise<void>
-}>, duration: number) {
-  setTimeout(async () => {
-    console.log('close')
+function closeMessageBox(app: App<Element>, vm: ComponentPublicInstance<messageBoxExpose>, duration: number) {
+  let timer: ReturnType<typeof setTimeout> | null = null
+  timer = setTimeout(async () => {
     await vm.setVisible(false)
-    console.log('unmount')
     app.unmount()
+    messageBoxes.value = messageBoxes.value.filter(item => item !== vm)
+    clearTimeout(timer as NodeJS.Timeout)
+    timer = null
   }, duration)
+}
+
+function calcTop(vm: ComponentPublicInstance<messageBoxExpose>): number {
+  const index = messageBoxes.value.findIndex(item => item === vm)
+  return vm.margin * index + (index + 1) * vm.height
 }
 
 messageTypes.forEach((type) => {

@@ -33,3 +33,10 @@ export interface Message extends MessageFn {
   error: MessageFn,
   info: MessageFn,
 }
+
+export interface messageBoxExpose {
+  setVisible: (flag: boolean) => Promise<void>,
+  setTop: (value: number) => void,
+  height: number,
+  margin: number
+}

@@ -2,7 +2,10 @@
   <transition name="my-messagebox-fade">
     <div
       v-show="visible"
-      :class="styleClass">
+      :class="styleClass"
+      :style="{
+        top: top + 'px'
+      }">
       {{ props.message }}
     </div>
   </transition>
@@ -39,18 +42,16 @@ const styleClass = computed(() => {
   return ['my-message', props.type]
 })
 
-//const timer = ref<ReturnType<typeof setInterval> | null>(null)
-
 const state = reactive({
-  visible: false
+  visible: false,
+  top: 20
 })
-const { visible } = toRefs(state)
+const { visible, top } = toRefs(state)
 const timer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 const setVisible = async (flag: boolean) => {
   return new Promise((resolve, reject) => {
     state.visible = flag
-    console.log(state.visible)
     timer.value = setTimeout(() => {
       resolve('')
       if (timer.value) {
@@ -60,9 +61,16 @@ const setVisible = async (flag: boolean) => {
   })
 }
 
-// expose，对完暴露的属性或方法，挂载到实例上
+const setTop = (value: number) => {
+  state.top = value
+}
+
+// expose，对外暴露的属性或方法，挂载到实例上
 defineExpose({
-  setVisible
+  setVisible,
+  setTop,
+  height: 48,
+  margin: 24
 })
 </script>
 
@@ -78,6 +86,7 @@ defineExpose({
   line-height: 46px;
   font-size: 15px;
   border-radius: 5px;
+  transition: top .3s ease-out;
 
   &.success {
     background-color: #f0f9eb;
