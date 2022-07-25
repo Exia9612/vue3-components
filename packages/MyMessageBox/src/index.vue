@@ -1,129 +1,228 @@
 <template>
-  <transition name="my-messagebox-fade">
+  <transition name="message-box-tran">
     <div
-      v-show="visible"
-      :class="styleClass"
-      :style="{
-        top: top + 'px'
-      }">
-      {{ props.message }}
+      v-if="visible"
+      class="ui-message-box"
+      @click="cancelBtnClick">
+      <div
+        class="ui-message-box-wrapper"
+        @click.stop>
+        <div class="message-box-title">
+          <h1>{{ title }}</h1>
+          <span
+            class="iconfont icon-close"
+            @click="cancelBtnClick">
+          </span>
+        </div>
+        <div class="message-box-content">
+          <!-- <p>{{ content }}</p> -->
+          <content-view :field="field"></content-view>
+        </div>
+        <div class="message-box-btn-group">
+          <button
+            class="btn btn-primary"
+            @click="confirmBtnClick">
+            {{ confirmBtnText }}
+          </button>
+          <button
+            v-if="showCancelBtn"
+            class="btn btn-default"
+            @click="cancelBtnClick">
+            {{ cancelBtnText }}
+          </button>
+        </div>
+      </div>
     </div>
   </transition>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, toRefs } from 'vue'
-import { messageTypeObj } from './typings'
+import { h, reactive, ref, toRefs } from 'vue';
+import { messageBoxFns, setVisibleCb, IMeassageBoxReactive } from './typings'
 
 defineOptions({
-  name: 'my-messagebox'
+  name: 'my-message'
 })
 
 const props = defineProps({
-  type: {
+  title: {
     type: String,
-    default: messageTypeObj.SUCCESS,
-    validator: (value: string) => {
-      return Object.values(messageTypeObj).includes(value)
-    }
+    default: 'Message'
   },
-  message: {
+  content: {
     type: String,
-    default: 'my-messagebox'
+    default: 'messagebox content'
   },
-  duration: {
-    type: Number,
-    default: 2
+  showCancelBtn: {
+    type: Boolean,
+    default: false
+  },
+  confirmBtnText: {
+    type: String,
+    default: 'confirm'
+  },
+  cancelBtnText: {
+    type: String,
+    default: 'cancel'
+  },
+  field: {
+    type: String,
+    default: 'confirm',
+    // validator: (value) => {
+    //   return messageBoxFns.includes(value)
+    // }
   }
 })
 
-// 仅对styleClass定义了getter函数
-const styleClass = computed(() => {
-  return ['my-message', props.type]
-})
-
-const state = reactive({
+// reactive
+const state = reactive<IMeassageBoxReactive>({
   visible: false,
-  top: 20
+  promptValue: '',
+  type: ''
 })
-const { visible, top } = toRefs(state)
-const timer = ref<ReturnType<typeof setTimeout> | null>(null)
 
-const setVisible = async (flag: boolean) => {
-  return new Promise((resolve, reject) => {
-    state.visible = flag
-    timer.value = setTimeout(() => {
-      resolve('')
-      if (timer.value) {
-        clearTimeout(timer.value)
-      }
-    }, 300)
-  })
+//refs
+let { visible } = toRefs(state)
+
+const setVisible = (flag: boolean, callBack?: setVisibleCb) => {
+  state.visible = flag
+  if (callBack) callBack(flag)
 }
 
-const setTop = (value: number) => {
-  state.top = value
+const confirmBtnClick = () => {
+  setVisible(false)
 }
 
-// expose，对外暴露的属性或方法，挂载到实例上
+const cancelBtnClick = () => {
+  setVisible(false)
+}
+
+const closeClick = () => {
+  setVisible(false)
+}
+
+const ContentView = ({ field }: { field: string }) => {
+  state.type = field
+  switch (field) {
+    case !field || 'confirm':
+      return h('p', null, props.content)
+    case 'prompt':
+      return h('input', {
+        value: state.promptValue,
+        onInput: (e: InputEvent) => state.promptValue = (e.target as HTMLInputElement).value,
+        class: 'message-input'
+      })
+    default:
+      return ''
+  }
+}
+
+// expose
 defineExpose({
-  setVisible,
-  setTop,
-  height: 48,
-  margin: 24
+  setVisible
 })
+
 </script>
 
 <style lang="scss" scoped>
-.my-message {
-  position: fixed;
-  top: 16px;
-  left: 50%;
-  width: 380px;
-  height: 46px;
-  margin-left: -190px;
-  text-align: center;
-  line-height: 46px;
-  font-size: 15px;
-  border-radius: 5px;
-  transition: top .3s ease-out;
-
-  &.success {
-    background-color: #f0f9eb;
-    color: #529b2e;
-    border: 1px solid #529b2e;
-  }
-
-  &.warning {
-    background-color: #fdf6ec;
-    color: #b88230;
-    border: 1px solid #b88230;
-  }
-
-  &.info {
-    background-color: #f4f4f5;
-    color: #73767a;
-    border: 1px solid #73767a;
-  }
-
-  &.error {
-    background-color: #fef0f0;
-    color: #c45656;
-    border: 1px solid #c45656;
-  }
-}
-
-.my-messagebox-fade-enter-active {
-  transition: all .3s ease-in;
-}
-
-.my-messagebox-fade-leave-active {
-  transition: all .3s ease-out;
-}
-
-.my-messagebox-fade-enter-from,
-.my-messagebox-fade-leave-to {
+.message-box-tran-leave-to,
+.message-box-tran-enter-from {
   opacity: 0;
-  transform: translateY(-20px);
+}
+
+.message-box-tran-enter-active {
+  transition: opacity .2s ease-in;
+}
+
+.message-box-tran-leave-active {
+  transition: opacity .2s ease-out;
+}
+
+.ui-message-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+
+  .ui-message-box-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    height: 200px;
+    margin: -100px 0 0 -210px;
+    background-color: #fff;
+    border-radius: 3px;
+
+    h1,
+    p {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .message-box-title {
+      padding: 15px 15px 10px;
+
+      h1 {
+        display: inline-block;
+        font-size: 10px;
+      }
+
+      .icon-close {
+        float: right;
+        font-size: 12px;
+        color: #999;
+      }
+    }
+
+    .message-box-content {
+      padding: 10px 15px;
+      p {
+        font-size: 15px;
+      }
+    }
+
+    .message-box-btn-group {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      padding: 5px 15px 15px;
+      box-sizing: border-box;
+      button {
+        float: right;
+      }
+    }
+  }
+
+  .btn {
+    border: none;
+    outline: none;
+    height: 32px;
+    padding: 8px 15px;
+    border-radius: 5px;
+
+    &.btn-primary {
+      background-color: #4093ff;
+      color: #fff;
+      margin-left: 10px;
+    }
+
+    &.btn-default {
+      background-color: #fff;
+      border: 1px solid #ddd;
+    }
+  }
+
+  .message-input {
+    border: none;
+    outline: none;
+    width: 100%;
+    border: 1px solid #ddd;
+    height: 32px;
+    box-sizing: border-box;
+  }
 }
 </style>

@@ -1,42 +1,41 @@
-export const messageTypes = ['success', 'warning', 'error', 'info'] as const
+export type OperationState = 'confirm' | 'close' | 'cancel'
+export type MessageBoxType = 'success' | 'error' | 'warning'
+export const messageBoxFns = ['confirm', 'prompt'] as const
 
-export const messageTypeObj = {
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ERROR: 'error',
-  INFO: 'info'
+export interface MessageBoxResponseData {
+  value: string,
+  action: OperationState
 }
 
-export interface MessageBoxOptions {
-  [index: string]: string | number | undefined,
-  type?: string,
-  message?: string,
-  duration?: number
+export type MessageBoxData = MessageBoxResponseData & OperationState
+
+export interface IMessageBoxOptions {
+  [index: string]: string | MessageBoxType | undefined | Boolean,
+  type?: MessageBoxType,
+  title?: string,
+  field?: string,
+  content?: string,
+  showCancelBtn?: Boolean,
+  confirmBtnText?: string,
+  cancelBtnText?: string
 }
 
-/*
-  MyMessage({
-    type: ....,
-    message: ....
-  })
-*/
-export type MessageFn = (options: MessageBoxOptions) => void
+export type MessageBoxFn = (options: IMessageBoxOptions) => Promise<MessageBoxData>
 
-/*
-  MyMessage.success({
-    message: ....
-  })
-*/
-export interface Message extends MessageFn {
-  success: MessageFn,
-  warning: MessageFn,
-  error: MessageFn,
-  info: MessageFn,
+export interface MessageBoxShortcutFn extends MessageBoxFn {
+  confirm: MessageBoxFn,
+  prompt: MessageBoxFn
 }
 
 export interface messageBoxExpose {
-  setVisible: (flag: boolean) => Promise<void>,
-  setTop: (value: number) => void,
-  height: number,
-  margin: number
+  // cb需要接受state参数，作为resolve的结果
+  setVisible: (flag: boolean, cb: setVisibleCb) => void,
+}
+
+export type setVisibleCb = (visible: boolean) => void
+
+export interface IMeassageBoxReactive {
+  type: OperationState,
+  visible: boolean,
+  promptValue: '',
 }

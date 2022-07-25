@@ -3,7 +3,8 @@ import MyButton from './myButton'
 import MySelector from './MySelecter'
 import { MyCarousel, MyCarouselItem } from './MyCarousel'
 import { MyMagnifier } from './MyMagnifier'
-import MyMessageBox from './MyMessageBox'
+import MyMessage from './MyMessage'
+import { MyMessageBox } from './MyMessageBox'
 
 
 const Components = [
@@ -12,7 +13,7 @@ const Components = [
   MyCarousel,
   MyCarouselItem,
   MyMagnifier,
-  MyMessageBox
+  MyMessage
 ]
 
 const install = (app: App): void => {
@@ -20,6 +21,11 @@ const install = (app: App): void => {
     console.log(component.name, component)
     app.component(component.name, component)
   })
+  app.config.globalProperties.$messageBox = MyMessageBox
+}
+
+export {
+  MyMessageBox 
 }
 
 export default {

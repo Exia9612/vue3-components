@@ -29,7 +29,8 @@
       :url="url"
       :imgAlt="imgAlt">
      </my-magnifier>  -->
-    <button @click="handleClickSuccess">
+
+    <!-- <button @click="handleClickSuccess">
       click success
     </button>
     <button @click="handleClickError">
@@ -40,13 +41,22 @@
     </button>
     <button @click="handleClickInfo">
       click info
+    </button> -->
+
+    <button @click="handleClickMessageBox">
+      click success
+    </button>
+
+    <button @click="handleClickMessageConfirm">
+      click success
     </button>
   </div>
 </template>
  
 <script lang="ts">
 import { defineComponent, reactive, Ref, ref, toRefs } from 'vue';
-import { MyMessage } from '../packages/MyMessageBox'
+import { MyMessage } from '../packages/MyMessage'
+import { MyMessageBox } from '../packages'
  
 export default defineComponent({
   name: 'App',
@@ -107,6 +117,14 @@ export default defineComponent({
       })
     }
 
+    const handleClickMessageBox = () => {
+      MyMessageBox({})
+    }
+
+    const handleClickMessageConfirm = () => {
+      MyMessageBox.prompt!({})
+    }
+
     const type: Ref<string> = ref('success')
 
     return {
@@ -117,6 +135,8 @@ export default defineComponent({
       handleClickError,
       handleClickWarning,
       handleClickInfo,
+      handleClickMessageBox,
+      handleClickMessageConfirm,
       ...toRefs(magnifierData),
       type
     }
