@@ -15,19 +15,19 @@ const displayMessageBox = (app: App<Element | DocumentFragment>, promiseConstruc
   const messageBoxInstance = app.mount(oDocumentFragment) as ComponentPublicInstance<messageBoxExpose>
   document.body.appendChild(oDocumentFragment)
   messageBoxInstance.setVisible(true, (visible: boolean) => {
-    if (!visible) {
-      switch (type) {
-        case 'cancel':
-          promiseConstructor.reject('cancel')
-          break
-        case  'confirm':
-          promiseConstructor.resolve(promptValue)
-          break
-        default:
-          promiseConstructor.resolve(type)
-          break
-      }
-    }
+    // if (!visible) {
+    //   switch (type) {
+    //     case 'cancel':
+    //       promiseConstructor.reject('cancel')
+    //       break
+    //     case  'confirm':
+    //       promiseConstructor.resolve(promptValue)
+    //       break
+    //     default:
+    //       promiseConstructor.resolve(type)
+    //       break
+    //   }
+    // }
   })
 }
 

@@ -43,13 +43,16 @@
       click info
     </button> -->
 
-    <button @click="handleClickMessageBox">
+    <!-- ---------------------------messageBox--------------------------- -->
+    <!-- <button @click="handleClickMessageBox">
       click success
     </button>
 
     <button @click="handleClickMessageConfirm">
       click success
-    </button>
+    </button> -->
+
+    <my-note></my-note>
   </div>
 </template>
  

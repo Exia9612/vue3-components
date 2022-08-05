@@ -78,7 +78,7 @@ const props = defineProps({
 const state = reactive<IMeassageBoxReactive>({
   visible: false,
   promptValue: '',
-  type: ''
+  type: 'confirm'
 })
 
 //refs
@@ -102,19 +102,19 @@ const closeClick = () => {
 }
 
 const ContentView = ({ field }: { field: string }) => {
-  state.type = field
-  switch (field) {
-    case !field || 'confirm':
-      return h('p', null, props.content)
-    case 'prompt':
-      return h('input', {
-        value: state.promptValue,
-        onInput: (e: InputEvent) => state.promptValue = (e.target as HTMLInputElement).value,
-        class: 'message-input'
-      })
-    default:
-      return ''
-  }
+  // state.type = field
+  // switch (field) {
+  //   case !field || 'confirm':
+  //     return h('p', null, props.content)
+  //   case 'prompt':
+  //     return h('input', {
+  //       value: state.promptValue,
+  //       onInput: (e: InputEvent) => state.promptValue = (e.target as HTMLInputElement).value,
+  //       class: 'message-input'
+  //     })
+  //   default:
+  //     return ''
+  // }
 }
 
 // expose

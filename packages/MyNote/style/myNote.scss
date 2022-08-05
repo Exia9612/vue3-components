@@ -1,0 +1,35 @@
+.my-note-container {
+  box-sizing: border-box;
+  padding: 10px;
+  min-width: 300px;
+  width: 50vw;
+  min-height: 168px;
+  height: 28vw;
+  position: relative;
+  border-radius: 5px;
+  // background-color: antiquewhite;
+  box-shadow: 0 0 5px #fff;
+  overflow: auto;
+
+  .circle {
+    position: absolute;
+    top: -30px;
+    left: -30px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff7979;
+    border-radius: 50%;
+
+    #close {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    #open {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}

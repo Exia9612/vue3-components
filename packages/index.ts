@@ -5,6 +5,8 @@ import { MyCarousel, MyCarouselItem } from './MyCarousel'
 import { MyMagnifier } from './MyMagnifier'
 import MyMessage from './MyMessage'
 import { MyMessageBox } from './MyMessageBox'
+import { MyNote } from './MyNote'
+import '../assets/css/iconfont.css'
 
 
 const Components = [
@@ -13,7 +15,8 @@ const Components = [
   MyCarousel,
   MyCarouselItem,
   MyMagnifier,
-  MyMessage
+  MyMessage,
+  MyNote
 ]
 
 const install = (app: App): void => {
